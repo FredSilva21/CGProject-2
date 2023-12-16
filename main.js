@@ -11,7 +11,7 @@ const camera = new THREE.PerspectiveCamera(
   0.1,
   1000
 );
-camera.position.set(3, 7.5, 30);
+camera.position.set(-40, 10, 10);
 camera.lookAt(scene.position); //point the camera to the center of the scene
 
 //Renderer
@@ -75,19 +75,30 @@ cube3.position.set(-2, 1, 0);
 cube.add(cube3);
 
 //Arm Stand
-const cubeGeometry4 = new THREE.BoxGeometry(1, 4, 1);
-const cubeMaterial4 = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+const cubeGeometry4 = new THREE.BoxGeometry(1, 6, 1);
+const cubeMaterial4 = new THREE.MeshBasicMaterial({ color: 0xffffff });
 const cube4 = new THREE.Mesh(cubeGeometry4, cubeMaterial4);
-cube4.position.set(-2, 3, 0);
+cube4.position.set(-2, 4, 0);
 cube.add(cube4);
 
+//Pivot Arm
+const pivotArm = new THREE.Object3D();
+cube4.add(pivotArm);
+
 //Arm
-const cubeGeometry5 = new THREE.BoxGeometry(1, 4, 1);
-const cubeMaterial5 = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+const cubeGeometry5 = new THREE.BoxGeometry(1, 6, 1);
+const cubeMaterial5 = new THREE.MeshBasicMaterial({ color: 0xffffff });
 const cube5 = new THREE.Mesh(cubeGeometry5, cubeMaterial5);
-cube5.position.set(-2, 9, 0);
-cube5.rotation.set(Math.Pi/4,0,0)
-cube.add(cube5);
+cube5.position.set(-3, 4.75, 0);
+cube5.rotation.set(0, 0,Math.PI / 3);
+pivotArm.add(cube5);
+
+//Cable
+const cableGeometry = new THREE.CylinderGeometry(0.2, 0.2, 4, 16);
+const cableMaterial = new THREE.MeshBasicMaterial({ color: 0x808080 });
+const cable = new THREE.Mesh(cableGeometry, cableMaterial);
+cable.position.set(0, -2, 0); // Ajusta a posição em relação ao braço
+pivotArm.add(cable);
 
 // GUI
 const gui = new GUI();
@@ -95,6 +106,8 @@ const gui = new GUI();
 // Parameters
 const pivotControls = gui.addFolder("Pivot Controls");
 pivotControls.add(pivot.rotation, "y", 0, Math.PI * 2).name("Rotation Y");
+const armControls=gui.addFolder("ArmPivot Controls")
+armControls.add(pivotArm.rotation, "z", 0, Math.PI * 2).name("Rotation Z");
 
 //Light
 const light = new THREE.AmbientLight(0x404040); // soft white light
