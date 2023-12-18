@@ -90,15 +90,22 @@ const cubeGeometry5 = new THREE.BoxGeometry(1, 6, 1);
 const cubeMaterial5 = new THREE.MeshBasicMaterial({ color: 0xffffff });
 const cube5 = new THREE.Mesh(cubeGeometry5, cubeMaterial5);
 cube5.position.set(-3, 4.75, 0);
-cube5.rotation.set(0, 0,Math.PI / 3);
+cube5.rotation.set(0, 0, Math.PI / 3);
 pivotArm.add(cube5);
 
 //Cable
-const cableGeometry = new THREE.CylinderGeometry(0.2, 0.2, 4, 16);
+const cableGeometry = new THREE.CylinderGeometry(0.2, 0.2, 6, 16);
 const cableMaterial = new THREE.MeshBasicMaterial({ color: 0x808080 });
 const cable = new THREE.Mesh(cableGeometry, cableMaterial);
-cable.position.set(0, -2, 0); // Ajusta a posição em relação ao braço
+cable.position.set(-5, 3, 0); // Ajusta a posição em relação ao braço
 pivotArm.add(cable);
+
+//Sphere
+const sphereGeometry = new THREE.SphereGeometry(2 , 8, 16);
+const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+sphere.position.set(0,-4,0)
+cable.add(sphere);
 
 // GUI
 const gui = new GUI();
@@ -106,12 +113,8 @@ const gui = new GUI();
 // Parameters
 const pivotControls = gui.addFolder("Pivot Controls");
 pivotControls.add(pivot.rotation, "y", 0, Math.PI * 2).name("Rotation Y");
-const armControls=gui.addFolder("ArmPivot Controls")
+const armControls = gui.addFolder("ArmPivot Controls");
 armControls.add(pivotArm.rotation, "z", 0, Math.PI * 2).name("Rotation Z");
-
-//Light
-const light = new THREE.AmbientLight(0x404040); // soft white light
-scene.add(light);
 
 //AxisHelpers
 const axesHelper = new THREE.AxesHelper(5);
