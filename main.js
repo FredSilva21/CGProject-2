@@ -55,7 +55,7 @@ pivot.add(cube);
 // Wheel 1L
 const cylinderGeometry = new THREE.CylinderGeometry(1, 1, 1, 6);
 // Texture for the wheel
-const wheelTexture = textureLoader.load("./assets/wheel.svg"); // Substitua com o caminho correto para sua textura de roda
+const wheelTexture = textureLoader.load("./assets/wheel.svg");
 
 // Material for the wheel
 const wheelMaterial = new THREE.MeshBasicMaterial({ map: wheelTexture });
@@ -122,9 +122,14 @@ const cable = new THREE.Mesh(cableGeometry, cableMaterial);
 cable.position.set(-5, 3, 0); // Ajusta a posição em relação ao braço
 pivotArm.add(cable);
 
-//Sphere
+
+// Sphere
 const sphereGeometry = new THREE.SphereGeometry(2, 8, 16);
-const sphereMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00 });
+
+// Texture for the ball
+const ballTexture = textureLoader.load("./assets/ball.png");
+const sphereMaterial = new THREE.MeshBasicMaterial({ map: ballTexture });
+
 const sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
 sphere.position.set(0, -4, 0);
 cable.add(sphere);
@@ -173,7 +178,33 @@ function handleKeyUp(key) {
 let swingDirection = 1;
 const swingSpeed = 0.01;
 
-// ...
+// Walls
+const wallGeometry = new THREE.BoxGeometry(10, 5, 0.5);
+const wallMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+const wall1 = new THREE.Mesh(wallGeometry, wallMaterial);
+wall1.position.set(0, 2.5, -50);
+scene.add(wall1);
+
+const wall2 = new THREE.Mesh(wallGeometry, wallMaterial);
+wall2.position.set(0, 2.5, 50);
+scene.add(wall2);
+
+const wall3 = new THREE.Mesh(wallGeometry, wallMaterial);
+wall3.rotation.y = Math.PI / 2;
+wall3.position.set(-50, 2.5, 0);
+scene.add(wall3);
+
+const wall4 = new THREE.Mesh(wallGeometry, wallMaterial);
+wall4.rotation.y = Math.PI / 2;
+wall4.position.set(50, 2.5, 0);
+scene.add(wall4);
+
+// Function to check collision
+function checkCollision(object1, object2) {
+  const box1 = new THREE.Box3().setFromObject(object1);
+  const box2 = new THREE.Box3().setFromObject(object2);
+  return box1.intersectsBox(box2);
+}
 
 //Animate
 function animate() {
@@ -194,12 +225,20 @@ function animate() {
   if (keys.S) pivot.position.z -= carSpeed;
   if (keys.D) pivot.position.x += carSpeed;
 
+  // Verifique a colisão com as paredes
+  if (checkCollision(sphere, wall1) || checkCollision(sphere, wall2) || checkCollision(sphere, wall3) || checkCollision(sphere, wall4)) {
+    // Faça as paredes caírem (remova da cena)
+    scene.remove(wall1);
+    scene.remove(wall2);
+    scene.remove(wall3);
+    scene.remove(wall4);
+  }
+
   // Atualize os controles OrbitControls
   controls.update();
 
   // Renderize a cena
   renderer.render(scene, camera);
 }
-
 // Start your own animation loop
 animate();
